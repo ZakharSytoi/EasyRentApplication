@@ -1,6 +1,13 @@
 package com.example.deploydemo.service.security;
 
 public enum Permission {
+
+    OWNER_SPECIFIC_PERM,
+    ADMIN_SPECIFIC_PERM,
+    TENANT_SPECIFIC_PERM,
+    SEMI_PERM,
+
+
     APARTMENTS_READ,
     APARTMENTS_CREATE,
     APARTMENTS_DELETE,
@@ -28,5 +35,10 @@ public enum Permission {
 
     ANNOUNCEMENT_READ,
     ANNOUNCEMENT_CREATE,
-    ANNOUNCEMENT_DELETE
+    ANNOUNCEMENT_DELETE,
+
+    TENANT_USER_CREATE,
+    TENANT_USER_UPDATE,
+    OWNER_USER_CREATE,
+    OWNER_USER_UPDATE
 }

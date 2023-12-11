@@ -1,4 +1,4 @@
-package com.example.deploydemo;
+package com.example.deploydemo.web.controllers;
 
 public record ResponseApartmentObject(
         String name,

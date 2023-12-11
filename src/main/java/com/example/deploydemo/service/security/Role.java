@@ -9,6 +9,11 @@ import static com.example.deploydemo.service.security.Permission.*;
 
 public enum Role {
     ADMIN(Set.of(
+            ADMIN_SPECIFIC_PERM,    //TEMPORARY. DELETE AFTER TESTS
+               //TEMPORARY
+            SEMI_PERM,     //TEMPORARY.
+
+
             APARTMENTS_READ,
             APARTMENTS_CREATE,
             APARTMENTS_DELETE,
@@ -36,9 +41,17 @@ public enum Role {
 
             ANNOUNCEMENT_READ,
             ANNOUNCEMENT_CREATE,
-            ANNOUNCEMENT_DELETE
+            ANNOUNCEMENT_DELETE,
+
+            TENANT_USER_CREATE,
+            TENANT_USER_UPDATE,
+            OWNER_USER_CREATE,
+            OWNER_USER_UPDATE
     )),
     OWNER(Set.of(
+            OWNER_SPECIFIC_PERM,
+            SEMI_PERM,
+
             APARTMENTS_READ,
             APARTMENTS_CREATE,
             APARTMENTS_DELETE,
@@ -64,9 +77,16 @@ public enum Role {
 
             ANNOUNCEMENT_READ,
             ANNOUNCEMENT_CREATE,
-            ANNOUNCEMENT_DELETE
+            ANNOUNCEMENT_DELETE,
+
+            TENANT_USER_CREATE,
+            OWNER_USER_CREATE,
+            OWNER_USER_UPDATE
     )),
     TENANT(Set.of(
+            TENANT_SPECIFIC_PERM,
+            SEMI_PERM,
+
             APARTMENTS_READ,
 
             RENT_CONTRACT_READ,
@@ -81,7 +101,9 @@ public enum Role {
             APPEAL_UPDATE,
             APPEAL_DELETE,
 
-            ANNOUNCEMENT_READ
+            ANNOUNCEMENT_READ,
+
+            TENANT_USER_UPDATE
     ));
 
     private final Set<Permission> permissions;

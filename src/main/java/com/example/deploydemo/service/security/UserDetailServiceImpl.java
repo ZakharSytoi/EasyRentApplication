@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
-    private final RoleService roleservice;
     private final UserService userService;
 
     @Override

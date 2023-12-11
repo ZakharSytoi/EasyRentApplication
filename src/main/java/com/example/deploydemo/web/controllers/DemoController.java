@@ -1,6 +1,5 @@
 package com.example.deploydemo.web.controllers;
 
-import com.example.deploydemo.ResponseApartmentObject;
 import com.example.deploydemo.repository.model.User;
 import com.example.deploydemo.repository.daos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
