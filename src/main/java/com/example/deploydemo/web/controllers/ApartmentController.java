@@ -15,8 +15,9 @@ public class ApartmentController {
     private final ApartmentService apartmentService;
 
     @GetMapping
-    public ResponseEntity<Page<ApartmentResponseDto>> getAllOwnersApartments() {
-        return ResponseEntity.ok().body(apartmentService.getAllOwnersApartments());
+    public ResponseEntity<Page<ApartmentResponseDto>> getAllOwnersApartments(@RequestParam(required = false, defaultValue = "0") int number,
+                                                                             @RequestParam(required = false, defaultValue = "10") int size) {
+        return ResponseEntity.ok().body(apartmentService.getAllOwnersApartments(number, size));
     }
 
     @GetMapping("/{id:\\d+}")
