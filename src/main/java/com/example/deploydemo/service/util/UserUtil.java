@@ -1,6 +1,7 @@
 package com.example.deploydemo.service.util;
 
 import com.example.deploydemo.repository.daos.UserRepository;
+import com.example.deploydemo.repository.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,5 +20,11 @@ public class UserUtil {
             ).getId();
         } else userId = -1L;
         return userId;
+    }
+
+    public User getUserFromContext(){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(userName).orElseThrow(
+                () -> new UsernameNotFoundException("User not found"));
     }
 }
