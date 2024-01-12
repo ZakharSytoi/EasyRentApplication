@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS
     users,
     apartment,
     roles,
+    users_roles,
     rent_contract,
     contract,
     rent_property_photo,

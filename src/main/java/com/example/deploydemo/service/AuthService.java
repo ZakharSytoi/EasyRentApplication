@@ -7,6 +7,7 @@ import com.example.deploydemo.service.dto.UserRegistrationDtoRequest;
 import com.example.deploydemo.service.exception.UserAlreadyExistsException;
 import com.example.deploydemo.service.security.UserDetailServiceImpl;
 import com.example.deploydemo.service.util.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,13 +38,18 @@ public class AuthService {
                 loginUserDtoRequest.getUsername());
         return jwtUtil.generateToken(userDetails);
     }
+    @Transactional
     public void registerUser(UserRegistrationDtoRequest request) throws UserAlreadyExistsException {
         if(userService.findByEmail(request.email()).isPresent()){
             throw new UserAlreadyExistsException(String.format("User with email %s already exists.", request.email()));
         }
+
         User user = new User();
         user.setName(request.name());
+        user.setSurname(request.surname());
         user.setEmail(request.email());
+        user.setContactEmail(request.contact_email());
+        user.setPhoneNumber(request.phone_number());
         user.setRoles(Set.of(roleService.findRoleByName(request.role().name())));
         user.setPassword(passwordEncoder.encode(request.password()));
         userRepository.save(user);
