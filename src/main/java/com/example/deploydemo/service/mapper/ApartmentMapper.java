@@ -1,6 +1,5 @@
 package com.example.deploydemo.service.mapper;
 
-import com.example.deploydemo.repository.daos.UserRepository;
 import com.example.deploydemo.repository.model.Apartment;
 import com.example.deploydemo.service.dto.ApartmentRequestDto;
 import com.example.deploydemo.service.dto.ApartmentResponseDto;
@@ -12,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Mapper(componentModel = "spring")
 public abstract class ApartmentMapper {
     @Autowired
-    protected UserRepository userRepository;
-    @Autowired
     protected UserUtil userUtil;
     public abstract ApartmentResponseDto apartmentToApartmentDto(Apartment apartment);
-    @Mapping(target = "owner", expression = "java(userRepository.findById(userUtil.getUserIdFromContext()))")
+    @Mapping(target = "owner", expression = "java(userUtil.getUserFromContext())")
     public abstract Apartment apartmentFromDtoRequest(ApartmentRequestDto apartmentRequestDto);
 }
