@@ -39,7 +39,7 @@ public class AuthService {
         return jwtUtil.generateToken(userDetails);
     }
     @Transactional
-    public void registerUser(UserRegistrationDtoRequest request) throws UserAlreadyExistsException {
+    public Long registerUser(UserRegistrationDtoRequest request) throws UserAlreadyExistsException {
         if(userService.findByEmail(request.email()).isPresent()){
             throw new UserAlreadyExistsException(String.format("User with email %s already exists.", request.email()));
         }
@@ -52,6 +52,6 @@ public class AuthService {
         user.setPhoneNumber(request.phone_number());
         user.setRoles(Set.of(roleService.findRoleByName(request.role().name())));
         user.setPassword(passwordEncoder.encode(request.password()));
-        userRepository.save(user);
+        return userRepository.save(user).getId();
     }
 }
