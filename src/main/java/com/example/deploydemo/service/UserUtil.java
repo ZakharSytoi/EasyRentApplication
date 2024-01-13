@@ -1,4 +1,4 @@
-package com.example.deploydemo.service.util;
+package com.example.deploydemo.service;
 
 import com.example.deploydemo.repository.daos.UserRepository;
 import com.example.deploydemo.repository.model.User;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserUtil {
     private final UserRepository userRepository;
-    public Long getUserIdFromContext(){
+    public Long getUserIdFromContext() {
         Long userId;
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         if (!userName.equals("anonymousUser")) {
@@ -22,9 +22,15 @@ public class UserUtil {
         return userId;
     }
 
-    public User getUserFromContext(){
+    public User getUserFromContext() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(userName).orElseThrow(
                 () -> new UsernameNotFoundException("User not found"));
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
     }
 }

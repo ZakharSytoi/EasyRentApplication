@@ -6,7 +6,7 @@ import com.example.deploydemo.service.dto.ApartmentRequestDto;
 import com.example.deploydemo.service.dto.ApartmentResponseDto;
 import com.example.deploydemo.service.exception.ApartmentNotFoundException;
 import com.example.deploydemo.service.mapper.ApartmentMapper;
-import com.example.deploydemo.service.util.UserUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
@@ -21,16 +21,19 @@ import java.net.URI;
 public class ApartmentService {
     private final ApartmentRepository apartmentRepository;
     private final UserUtil userUtil;
-    private final ApartmentMapper apartmentMapper = Mappers.getMapper(ApartmentMapper.class);
+    private final ApartmentMapper apartmentMapper;
 
     public Page<ApartmentResponseDto> getAllOwnersApartments(int number, int size) {
-        return apartmentRepository.findAllByUserId(userUtil.getUserIdFromContext(), PageRequest.of(number, size))
+        return apartmentRepository.findAllByOwner_Id(userUtil.getUserIdFromContext(), PageRequest.of(number, size))
                 .map(apartmentMapper::apartmentToApartmentDto);
     }
 
     public ApartmentResponseDto getApartmentById(Long id) {
-        return apartmentMapper.apartmentToApartmentDto(apartmentRepository.findByIdAndUserId(id, userUtil.getUserIdFromContext()).orElseThrow(
-                () -> new ApartmentNotFoundException(String.format("Apartment with id = %s not found", id))
+        Long userId = userUtil.getUserIdFromContext();
+        return apartmentMapper.apartmentToApartmentDto(apartmentRepository.findByIdAndOwner_id(id, userId).orElseThrow(
+                () -> new ApartmentNotFoundException(
+                        String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
+                )
         ));
     }
 
@@ -43,15 +46,18 @@ public class ApartmentService {
     }
 
     public void updateApartment(Long id, ApartmentRequestDto apartmentRequestDto) {
-        if(apartmentRepository.existsById(id)){
-            Apartment apartment = apartmentMapper.apartmentFromDtoRequest(apartmentRequestDto);
-            apartment.setId(id);
-            apartmentRepository.save(apartment);
-        }
-        else throw new ApartmentNotFoundException(String.format("Apartment with id = %s not found", id));
+        Long userId = userUtil.getUserIdFromContext();
+        Apartment apartment = apartmentRepository.findByIdAndOwner_id(id, userId).orElseThrow(
+                () -> new ApartmentNotFoundException(
+                        String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
+                )
+        );
+        apartmentMapper.updateApartmentFromDto(apartmentRequestDto, apartment);
+        apartmentRepository.save(apartment);
     }
 
+    @Transactional
     public void deleteApartment(Long id) {
-        apartmentRepository.deleteByIdAndUserId(id, userUtil.getUserIdFromContext());
+        apartmentRepository.deleteByIdAndOwner_Id(id, userUtil.getUserIdFromContext());
     }
 }

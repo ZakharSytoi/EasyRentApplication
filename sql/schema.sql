@@ -52,7 +52,7 @@ CREATE TABLE apartment (
 CREATE TABLE rent_contract (
                                id SERIAL PRIMARY KEY,
                                apartment_id INTEGER REFERENCES apartment(id),
-                               resident_user INTEGER REFERENCES users(id),
+                               resident_user INTEGER REFERENCES users(id) UNIQUE,
                                conclusion_date DATE,
                                expires_date DATE,
                                month_payment DECIMAL,

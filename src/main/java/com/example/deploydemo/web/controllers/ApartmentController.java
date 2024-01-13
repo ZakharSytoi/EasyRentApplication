@@ -1,8 +1,8 @@
 package com.example.deploydemo.web.controllers;
 
 import com.example.deploydemo.service.ApartmentService;
-import com.example.deploydemo.service.dto.ApartmentRequestDto;
-import com.example.deploydemo.service.dto.ApartmentResponseDto;
+import com.example.deploydemo.service.RentContractService;
+import com.example.deploydemo.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/easyrent-api/v1/apartments/")
 public class ApartmentController {
     private final ApartmentService apartmentService;
+    private final RentContractService rentContractService;
 
     @GetMapping
     public ResponseEntity<Page<ApartmentResponseDto>> getAllOwnersApartments(@RequestParam(required = false, defaultValue = "0") int number,
@@ -38,8 +39,42 @@ public class ApartmentController {
     }
 
     @DeleteMapping("/{id:\\d+}")
-    public ResponseEntity<?> deleteApartment(@PathVariable Long id){
+    public ResponseEntity<?> deleteApartment(@PathVariable Long id) {
         apartmentService.deleteApartment(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id:\\d+}/rentcontracts")
+    public ResponseEntity<Page<RentContractResponseDto>> getApartmentRentContracts(@PathVariable Long id,
+                                                                                   @RequestParam(required = false, defaultValue = "0") int number,
+                                                                                   @RequestParam(required = false, defaultValue = "10") int size) {
+        return ResponseEntity.ok().body(rentContractService.getRentContractsByApartmentId(id, number, size));
+    }
+
+    @GetMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}")
+    public ResponseEntity<RentContractResponseDto> getApartmentRentContractById(@PathVariable Long id,
+                                                                                @PathVariable Long contractId) {
+        return ResponseEntity.ok().body(rentContractService.getRentContractByApartmentId(id, contractId));
+    }
+
+    @PostMapping("/{id:\\d+}/rentcontracts")
+    public ResponseEntity<?> createRentContractInApartment(@PathVariable Long id,
+                                                           @RequestBody RentContractCreateRequestDto rentContractCreateRequestDto) {
+        return ResponseEntity.created(rentContractService.createRentContract(id, rentContractCreateRequestDto)).build();
+    }
+
+    @PutMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}")
+    public ResponseEntity<ApartmentResponseDto> updateRentContractInApartment(@PathVariable Long id,
+                                                                              @PathVariable Long contractId,
+                                                                              @RequestBody RentContractUpdateRequestDto rentContractUpdateRequestDto) {
+        rentContractService.updateRentContract(id, contractId, rentContractUpdateRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}")
+    public ResponseEntity<RentContractResponseDto> deleteApartmentRentContractById(@PathVariable Long id,
+                                                                                   @PathVariable Long contractId) {
+        rentContractService.deleteRentContractByApartmentId(id, contractId);
         return ResponseEntity.noContent().build();
     }
 }
