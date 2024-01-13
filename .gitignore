@@ -5,7 +5,7 @@
 
 # Log file
 *.log
-target
+
 # BlueJ files
 *.ctxt
 
@@ -24,3 +24,16 @@ target
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+#spring
+*.classpath
+*.prefs
+*.lst
+*.project
+*.factorypath
+*.original
+target/
+.settings/
+.apt_generated
+.sts4-cache
+.springBeans
