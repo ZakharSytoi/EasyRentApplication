@@ -3,7 +3,7 @@ package com.example.deploydemo.service.mapper;
 import com.example.deploydemo.repository.model.Apartment;
 import com.example.deploydemo.service.dto.ApartmentRequestDto;
 import com.example.deploydemo.service.dto.ApartmentResponseDto;
-import com.example.deploydemo.service.UserUtil;
+import com.example.deploydemo.service.util.UserUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

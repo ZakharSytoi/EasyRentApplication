@@ -9,6 +9,7 @@ import com.example.deploydemo.service.dto.RentContractUpdateRequestDto;
 import com.example.deploydemo.service.exception.ApartmentNotFoundException;
 import com.example.deploydemo.service.exception.RentContractNotFoundException;
 import com.example.deploydemo.service.mapper.RentContractMapper;
+import com.example.deploydemo.service.util.UserUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

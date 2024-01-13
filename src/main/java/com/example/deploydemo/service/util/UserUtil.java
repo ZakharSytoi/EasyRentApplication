@@ -1,4 +1,4 @@
-package com.example.deploydemo.service;
+package com.example.deploydemo.service.util;
 
 import com.example.deploydemo.repository.daos.UserRepository;
 import com.example.deploydemo.repository.model.User;
