@@ -15,6 +15,6 @@ public abstract class ApartmentMapper {
     protected UserUtil userUtil;
     public abstract ApartmentResponseDto apartmentToApartmentDto(Apartment apartment);
     @Mapping(target = "owner", expression = "java( userUtil.getUserFromContext() )")
-    public abstract Apartment apartmentFromDtoRequest(ApartmentRequestDto apartmentRequestDto);
+    public abstract Apartment apartmentFromRequestDto(ApartmentRequestDto apartmentRequestDto);
     public abstract void updateApartmentFromDto(ApartmentRequestDto apartmentRequestDto, @MappingTarget Apartment apartment);
 }
