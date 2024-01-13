@@ -1,6 +1,7 @@
 package com.example.deploydemo.service;
 
 import com.example.deploydemo.repository.daos.ApartmentRepository;
+import com.example.deploydemo.repository.daos.RentContractRepository;
 import com.example.deploydemo.repository.model.Apartment;
 import com.example.deploydemo.repository.model.RentContract;
 import com.example.deploydemo.service.dto.RentContractCreateRequestDto;
@@ -27,6 +28,7 @@ import java.util.Optional;
 public class RentContractService {
     private final ApartmentRepository apartmentRepository;
     private final UserUtil userUtil;
+    private final RentContractRepository rentContractRepository;
     private final RentContractMapper rentContractMapper;
 
     public Page<RentContractResponseDto> getRentContractsByApartmentId(Long id, int number, int size) {
@@ -93,8 +95,9 @@ public class RentContractService {
         Long userId = userUtil.getUserIdFromContext();
         Optional<Apartment> apartment = apartmentRepository.findByIdAndOwner_id(id, userId);
         if (apartment.isPresent()) {
-            apartment.get().getRentContracts().removeIf(contract -> contract.getId().equals(contractId));
-            apartmentRepository.save(apartment.get());
+            Optional<RentContract> rentContract = apartment.get().getRentContracts().stream().filter(contract -> contract.getId().equals(contractId)).findFirst();
+
+            rentContract.ifPresent(rentContractRepository::delete);
         } else throw new ApartmentNotFoundException(
                 String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
         );
