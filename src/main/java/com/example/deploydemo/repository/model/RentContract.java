@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,4 +27,6 @@ public class RentContract {
     @OneToOne
     @JoinColumn(name = "resident_user")
     private User residentUser;
+    @OneToMany(mappedBy = "rentContract")
+    private List<Tenant> tenants;
 }
