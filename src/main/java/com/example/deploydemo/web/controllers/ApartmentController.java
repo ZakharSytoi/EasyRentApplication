@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/easyrent-api/v1/apartments/")
+@RequestMapping("/easyrent-api/v1/apartments")
 public class ApartmentController {
     private final ApartmentService apartmentService;
     private final RentContractService rentContractService;
@@ -96,18 +96,18 @@ public class ApartmentController {
         return ResponseEntity.ok().body(tenantService.getRentContractTenantByApartmentId(id, contractId, tenantId));
     }
 
-    @PostMapping("/{id:\\d+}/rentcontracts//{contractId:\\d+}/tenants")
+    @PostMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}/tenants")
     public ResponseEntity<?> createRentContractTenantInApartment(@PathVariable Long id,
                                                                  @PathVariable Long contractId,
-                                                                 @RequestBody TenantCreateRequestDto tenantCreateRequestDto) {
-        return ResponseEntity.created(tenantService.createRentContractTenant(id, contractId, tenantCreateRequestDto)).build();
+                                                                 @RequestBody TenantRequestDto tenantRequestDto) {
+        return ResponseEntity.created(tenantService.createRentContractTenant(id, contractId, tenantRequestDto)).build();
     }
 
     @PutMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}/tenants/{tenantId:\\d+}")
     public ResponseEntity<?> updateRentContractTenantInApartment(@PathVariable Long id,
                                                                  @PathVariable Long contractId,
                                                                  @PathVariable Long tenantId,
-                                                                 @RequestBody TenantUpdateRequestDto tenantUpdateRequestDto) {
+                                                                 @RequestBody TenantRequestDto tenantUpdateRequestDto) {
         tenantService.updateRentContractTenant(id, contractId, tenantId, tenantUpdateRequestDto);
         return ResponseEntity.noContent().build();
     }
