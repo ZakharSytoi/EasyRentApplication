@@ -1,14 +1,12 @@
 package com.example.deploydemo.service;
 
 import com.example.deploydemo.repository.daos.ApartmentRepository;
-import com.example.deploydemo.repository.daos.RentContractRepository;
 import com.example.deploydemo.repository.daos.TenantRepository;
 import com.example.deploydemo.repository.model.Apartment;
 import com.example.deploydemo.repository.model.RentContract;
 import com.example.deploydemo.repository.model.Tenant;
+import com.example.deploydemo.service.dto.TenantRequestDto;
 import com.example.deploydemo.service.dto.TenantResponseDto;
-import com.example.deploydemo.service.dto.TenantCreateRequestDto;
-import com.example.deploydemo.service.dto.TenantUpdateRequestDto;
 import com.example.deploydemo.service.exception.ApartmentNotFoundException;
 import com.example.deploydemo.service.exception.RentContractNotFoundException;
 import com.example.deploydemo.service.exception.TenantNotFoundException;
@@ -31,7 +29,6 @@ import java.util.Optional;
 public class TenantService {
     private final UserUtil userUtil;
     private final ApartmentRepository apartmentRepository;
-    private final RentContractRepository rentContractRepository;
     private final TenantMapper tenantMapper;
     private final TenantRepository tenantRepository;
 
@@ -81,7 +78,7 @@ public class TenantService {
         );
     }
 
-    public URI createRentContractTenant(Long id, Long contractId, TenantCreateRequestDto tenantCreateRequestDto) {
+    public URI createRentContractTenant(Long id, Long contractId, TenantRequestDto tenantRequestDto) {
         Long userId = userUtil.getUserIdFromContext();
         Optional<Apartment> apartment = apartmentRepository.findByIdAndOwner_id(id, userId);
         if (apartment.isPresent()) {
@@ -95,14 +92,9 @@ public class TenantService {
                             )
                     );
 
-            rentContract.getTenants().add(tenantMapper.tenantFromRequestDto(tenantCreateRequestDto, rentContract));
-
             return ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path(String.format("/easyrent-api/v1/apartments/%s/rentcontracts/%s/", id, contractId))
-                    .path(rentContractRepository.save(rentContract).getTenants().stream()
-                            .filter(contract -> contract.getId().equals(contractId))
-                            .findFirst()
-                            .get()
+                    .path(tenantRepository.save(tenantMapper.tenantFromRequestDto(tenantRequestDto, rentContract))
                             .getId().toString())
                     .build().toUri();
         } else throw new ApartmentNotFoundException(
@@ -110,7 +102,7 @@ public class TenantService {
         );
     }
 
-    public void updateRentContractTenant(Long id, Long contractId, Long tenantId, TenantUpdateRequestDto tenantUpdateRequestDto) {
+    public void updateRentContractTenant(Long id, Long contractId, Long tenantId, TenantRequestDto tenantUpdateRequestDto) {
         Long userId = userUtil.getUserIdFromContext();
         Optional<Apartment> apartment = apartmentRepository.findByIdAndOwner_id(id, userId);
         if (apartment.isPresent()) {
@@ -124,16 +116,16 @@ public class TenantService {
                             )
                     );
 
-            tenantMapper.updateTenantFromRequestDto(rentContract.getTenants().stream()
+            Tenant tenantToUpdate = rentContract.getTenants().stream()
                     .filter(tenant -> tenant.getId().equals(tenantId))
                     .findFirst()
                     .orElseThrow(
                             () -> new TenantNotFoundException(
                                     String.format("Tenant with id = %s not found or not belong to Rent contract with id = %s", tenantId, contractId)
                             )
-                    ), tenantUpdateRequestDto
-            );
-            rentContractRepository.save(rentContract);
+                    );
+            tenantMapper.updateTenantFromRequestDto(tenantUpdateRequestDto, tenantToUpdate);
+            tenantRepository.save(tenantToUpdate);
         } else throw new ApartmentNotFoundException(
                 String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
         );
