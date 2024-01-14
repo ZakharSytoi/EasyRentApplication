@@ -30,7 +30,7 @@ public class UserUtil {
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found")
+                () -> new UsernameNotFoundException(String.format("User with id = %s not found", id))
         );
     }
 }
