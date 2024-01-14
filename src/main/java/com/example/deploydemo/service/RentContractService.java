@@ -68,7 +68,7 @@ public class RentContractService {
         if (apartment.isPresent()) {
             return ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path(String.format("/easyrent-api/v1/apartments/%s/rentcontracts/", id))
-                    .path(rentContractMapper.rentContractFromRequestDto(rentContractCreateRequestDto, apartment.get()).getId().toString())
+                    .path(rentContractRepository.save(rentContractMapper.rentContractFromRequestDto(rentContractCreateRequestDto, apartment.get())).getId().toString())
                     .build().toUri();
         } else throw new ApartmentNotFoundException(
                 String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
