@@ -7,6 +7,6 @@ public record RentContractCreateRequestDto(
         Date conclusionDate,
         Date expiresDate,
         Double montPayment,
-        String Note
+        String note
 ){
 }
