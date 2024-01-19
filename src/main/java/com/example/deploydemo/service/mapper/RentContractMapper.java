@@ -13,7 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class RentContractMapper {
     @Autowired
     protected UserUtil userUtil;
+
+    @Mapping(target = "documentLink", expression = """
+            java( org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath()
+                            .path(String.format("/easyrent-api/v1/apartments/%s/rentcontracts/%s/document", rentContract.getApartment().getId(), rentContract.getId()))
+                            .build().toUri(); )""")
     public abstract RentContractResponseDto rentContractToResponseDto(RentContract rentContract);
+
 
     @Mappings({
             @Mapping(target = "apartment", expression = "java(apartment)"),
