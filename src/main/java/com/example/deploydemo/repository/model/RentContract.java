@@ -29,4 +29,6 @@ public class RentContract {
     private User residentUser;
     @OneToMany(mappedBy = "rentContract")
     private List<Tenant> tenants;
+    @OneToOne(mappedBy = "rentContract")
+    private Contract document;
 }
