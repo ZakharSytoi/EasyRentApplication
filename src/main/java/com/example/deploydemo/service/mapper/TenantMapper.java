@@ -9,9 +9,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public abstract class TenantMapper {
     public abstract TenantResponseDto tenantToResponseDto(Tenant tenant);
+    public abstract List<TenantResponseDto> tenantListToResponseDtoList(List<Tenant> tenants);
     @Mapping(target = "rentContract", expression = "java( rentContract )")
     public abstract Tenant tenantFromRequestDto(TenantRequestDto createRequestDto, @Context RentContract rentContract);
     public abstract void updateTenantFromRequestDto(TenantRequestDto updateRequestDto, @MappingTarget  Tenant tenant);
