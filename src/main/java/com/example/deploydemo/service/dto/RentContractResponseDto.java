@@ -7,6 +7,8 @@ public record RentContractResponseDto(
         Date conclusionDate,
         Date expiresDate,
         Double montPayment,
-        String note
+        String note,
+        String documentLink,
+        String photoLinks
 ) {
 }
