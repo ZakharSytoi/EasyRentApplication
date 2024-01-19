@@ -1,4 +1,4 @@
-package com.example.deploydemo.web.controllers;
+package com.example.deploydemo.web.controllers.owner;
 
 import com.example.deploydemo.service.ApartmentService;
 import com.example.deploydemo.service.ContractService;
