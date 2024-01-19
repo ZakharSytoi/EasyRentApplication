@@ -1,6 +1,7 @@
 package com.example.deploydemo.config.securityConfig;
 
 import com.example.deploydemo.service.security.JwtRequestFilter;
+import com.example.deploydemo.service.security.Role;
 import com.example.deploydemo.service.security.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,6 +104,12 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST,"/easyrent-api/v1/apartments/{id}/rentcontracts/{contractId}/tenants").hasAuthority(TENANT_CREATE.toString());
                     auth.requestMatchers(HttpMethod.PUT,"/easyrent-api/v1/apartments/{id}/rentcontracts/{contractId}/tenants/{tenantId}").hasAuthority(TENANT_CREATE.toString());
                     auth.requestMatchers(HttpMethod.DELETE,"/easyrent-api/v1/apartments/{id}/rentcontracts/{contractId}/tenants/{tenantId}").hasAuthority(TENANT_DELETE.toString());
+
+                    auth.requestMatchers(HttpMethod.GET,"/easyrent-api/v1/tenant/apartments").hasRole(Role.TENANT.toString());
+                    auth.requestMatchers(HttpMethod.GET,"/easyrent-api/v1/tenant/apartments/rentcontract").hasRole(Role.TENANT.toString());
+                    auth.requestMatchers(HttpMethod.GET,"/easyrent-api/v1/tenant/apartments/rentcontract/tenant").hasRole(Role.TENANT.toString());
+                    auth.requestMatchers(HttpMethod.GET,"/easyrent-api/v1/tenant/apartments/rentcontract/document").hasRole(Role.TENANT.toString());
+
 
                     auth.requestMatchers("/easyrent-api/v1/security_checks/role_check").permitAll();
                     auth.anyRequest().permitAll();
