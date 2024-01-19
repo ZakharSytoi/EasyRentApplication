@@ -102,4 +102,14 @@ public class RentContractService {
                 String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
         );
     }
+
+    public RentContractResponseDto getTenantsRentContract() {
+        Long userId = userUtil.getUserIdFromContext();
+        Optional<RentContract> rentContract = rentContractRepository.findByResidentUser_Id(userId);
+        if (rentContract.isPresent()) {
+            return rentContractMapper.rentContractToResponseDto(rentContract.get());
+        } else throw new RentContractNotFoundException(
+                String.format("Rent Contract not found or not belong to user with id = %s", userId)
+        );
+    }
 }

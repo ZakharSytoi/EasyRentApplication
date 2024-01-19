@@ -1,6 +1,7 @@
 package com.example.deploydemo.service;
 
 import com.example.deploydemo.repository.daos.ApartmentRepository;
+import com.example.deploydemo.repository.daos.RentContractRepository;
 import com.example.deploydemo.repository.daos.TenantRepository;
 import com.example.deploydemo.repository.model.Apartment;
 import com.example.deploydemo.repository.model.RentContract;
@@ -31,6 +32,7 @@ public class TenantService {
     private final ApartmentRepository apartmentRepository;
     private final TenantMapper tenantMapper;
     private final TenantRepository tenantRepository;
+    private final RentContractRepository rentContractRepository;
 
     public Page<TenantResponseDto> getRentContractTenantsByApartmentId(Long id, Long contractId, int number, int size) {
         Long userId = userUtil.getUserIdFromContext();
@@ -151,6 +153,16 @@ public class TenantService {
                     .findFirst().ifPresent(tenantRepository::delete);
         } else throw new ApartmentNotFoundException(
                 String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
+        );
+    }
+
+    public List<TenantResponseDto> getTenantsTenant() {
+        Long userId = userUtil.getUserIdFromContext();
+        Optional<RentContract> rentContract = rentContractRepository.findByResidentUser_Id(userId);
+        if (rentContract.isPresent()) {
+            return tenantMapper.tenantListToResponseDtoList(rentContract.get().getTenants());
+        } else throw new RentContractNotFoundException(
+                String.format("Tenants not found or not belong to user with id = %s", userId)
         );
     }
 }

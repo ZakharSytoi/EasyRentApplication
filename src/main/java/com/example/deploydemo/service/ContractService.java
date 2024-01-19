@@ -2,6 +2,7 @@ package com.example.deploydemo.service;
 
 import com.example.deploydemo.repository.daos.ApartmentRepository;
 import com.example.deploydemo.repository.daos.ContractRepository;
+import com.example.deploydemo.repository.daos.RentContractRepository;
 import com.example.deploydemo.repository.model.Apartment;
 import com.example.deploydemo.repository.model.Contract;
 import com.example.deploydemo.repository.model.RentContract;
@@ -26,6 +27,7 @@ public class ContractService {
     private final ApartmentRepository apartmentRepository;
     private final ContractRepository contractRepository;
     private final UserUtil userUtil;
+    private final RentContractRepository rentContractRepository;
 
 
     public byte[] getTeacherPictureByPictureId(String id) {
@@ -124,6 +126,16 @@ public class ContractService {
             }
         } else throw new ApartmentNotFoundException(
                 String.format("Apartment with id = %s not found or not belong to user with id = %s", id, userId)
+        );
+    }
+
+    public byte[] getTenantsDocument() {
+        Long userId = userUtil.getUserIdFromContext();
+        Optional<RentContract> rentContract = rentContractRepository.findByResidentUser_Id(userId);
+        if (rentContract.isPresent()) {
+            return rentContract.get().getDocument().getData();
+        } else throw new RentContractNotFoundException(
+                String.format("Document not found or not belong to user with id = %s", userId)
         );
     }
 }

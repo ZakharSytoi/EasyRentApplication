@@ -1,10 +1,13 @@
 package com.example.deploydemo.service;
 
 import com.example.deploydemo.repository.daos.ApartmentRepository;
+import com.example.deploydemo.repository.daos.RentContractRepository;
 import com.example.deploydemo.repository.model.Apartment;
+import com.example.deploydemo.repository.model.RentContract;
 import com.example.deploydemo.service.dto.ApartmentRequestDto;
 import com.example.deploydemo.service.dto.ApartmentResponseDto;
 import com.example.deploydemo.service.exception.ApartmentNotFoundException;
+import com.example.deploydemo.service.exception.RentContractNotFoundException;
 import com.example.deploydemo.service.mapper.ApartmentMapper;
 import com.example.deploydemo.service.util.UserUtil;
 import jakarta.transaction.Transactional;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class ApartmentService {
     private final ApartmentRepository apartmentRepository;
     private final UserUtil userUtil;
     private final ApartmentMapper apartmentMapper;
+    private final RentContractRepository rentContractRepository;
 
     public Page<ApartmentResponseDto> getAllOwnersApartments(int number, int size) {
         return apartmentRepository.findAllByOwner_Id(userUtil.getUserIdFromContext(), PageRequest.of(number, size))
@@ -59,5 +64,15 @@ public class ApartmentService {
     @Transactional
     public void deleteApartment(Long id) {
         apartmentRepository.deleteByIdAndOwner_Id(id, userUtil.getUserIdFromContext());
+    }
+
+    public ApartmentResponseDto getTenantsApartment() {
+        Long userId = userUtil.getUserIdFromContext();
+        Optional<RentContract> rentContract = rentContractRepository.findByResidentUser_Id(userId);
+        if (rentContract.isPresent()) {
+            return apartmentMapper.apartmentToApartmentDto(rentContract.get().getApartment());
+        } else throw new RentContractNotFoundException(
+                String.format("Rent Contract not found or not belong to user with id = %s", userId)
+        );
     }
 }
