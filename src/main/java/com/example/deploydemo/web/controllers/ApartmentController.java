@@ -1,13 +1,16 @@
 package com.example.deploydemo.web.controllers;
 
 import com.example.deploydemo.service.ApartmentService;
+import com.example.deploydemo.service.ContractService;
 import com.example.deploydemo.service.RentContractService;
 import com.example.deploydemo.service.TenantService;
 import com.example.deploydemo.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class ApartmentController {
     private final ApartmentService apartmentService;
     private final RentContractService rentContractService;
     private final TenantService tenantService;
+    private final ContractService contractService;
 
     @GetMapping
     public ResponseEntity<Page<ApartmentResponseDto>> getAllOwnersApartments(@RequestParam(required = false, defaultValue = "0") int number,
@@ -117,6 +121,27 @@ public class ApartmentController {
                                                                    @PathVariable Long contractId,
                                                                    @PathVariable Long tenantId) {
         tenantService.deleteRentContractTenantByApartmentId(id, contractId, tenantId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping(value = "/{id:\\d+}/rentcontracts/{contractId:\\d+}/document", produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody byte[] getApartmentRentContractDocumentById(@PathVariable Long id,
+                                                                                  @PathVariable Long contractId) {
+        return contractService.getRentContractDocumentByApartmentId(id, contractId);
+    }
+
+    @PostMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}/document")
+    public ResponseEntity<?> createRentContractDocumentInApartment(@PathVariable Long id,
+                                                                   @PathVariable Long contractId,
+                                                                   @RequestParam("document") MultipartFile contractData) {
+        return ResponseEntity.created(contractService.createRentContractDocument(id, contractId, contractData)).build();
+    }
+
+    @DeleteMapping("/{id:\\d+}/rentcontracts/{contractId:\\d+}/document")
+    public ResponseEntity<?> deleteApartmentRentContractDocumentById(@PathVariable Long id,
+                                                                     @PathVariable Long contractId) {
+        contractService.deleteRentContractDocumentByApartmentId(id, contractId);
         return ResponseEntity.noContent().build();
     }
 }
